@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useInView } from 'framer-motion';
-import { ArrowRight, Shield, Truck, Award, Star } from 'lucide-react';
+import { motion, useScroll, useTransform, Variant , } from 'framer-motion';
+import { ArrowRight, Shield, Truck, Award, Star ,} from 'lucide-react';
 
 // Mock Link component for demonstration
 
@@ -131,12 +131,14 @@ const Home = () => {
       <section className="relative text-white min-h-screen flex items-center overflow-hidden">
         {/* Background Image with Blur and Parallax */}
         <motion.div
-          style={{ y: heroY }}
-          className="absolute inset-0 bg-cover bg-center filter blur-sm scale-110"
-          style={{
-            backgroundImage: `url(${world_map})`
-          }}
-        ></motion.div>
+  style={{ y: heroY }}
+  className="absolute inset-0 bg-cover bg-center filter blur-sm scale-110"
+>
+  <div
+    style={{ backgroundImage: `url(${world_map})` }}
+    className="absolute inset-0 bg-cover bg-center"
+  />
+</motion.div>
 
         {/* Overlay */}
         <motion.div

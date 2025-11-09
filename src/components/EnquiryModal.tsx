@@ -32,7 +32,7 @@ const EnquiryModal = ({
         enquiryType: 'Product Enquiry'
       };
 
-      const response = await fetch('https://nirrajpackaging-1.onrender.com/api/enquiry', {
+      const response = await fetch('https://niraajpack-3.onrender.com/api/enquiry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

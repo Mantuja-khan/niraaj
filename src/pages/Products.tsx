@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Package, Shield, Award } from 'lucide-react';
-import bubble_roll from "../assets/air_bubble_category.jpg"
+import bubble_roll from "../assets/bubble_1.jpg"
 import ep_foam from "../assets/ep_fitment.png"
 import bp_tap from "../assets/bopp_tap_home.jpg"
 import polybag from "../assets/polybag_catgory.jpg"
