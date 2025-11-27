@@ -32,7 +32,10 @@ const EnquiryModal = ({
         enquiryType: 'Product Enquiry'
       };
 
-      const response = await fetch('https://niraajpack-3.onrender.com/api/enquiry', {
+      // Use environment variable for backend URL
+      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/api/enquiry`;
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
