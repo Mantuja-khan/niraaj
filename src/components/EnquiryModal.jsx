@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Send, CheckCircle, AlertCircle } from 'lucide-react';
 
+
 const EnquiryModal = ({
   isOpen,
   onClose,
