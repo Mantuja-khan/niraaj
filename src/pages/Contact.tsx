@@ -21,7 +21,7 @@ const Contact = () => {
     setSubmitStatus('idle');
 
     try {
-      const response = await fetch('https://Niraajpackaging-1.onrender.com/api/contact', {
+      const response = await fetch('https://api.niraajpack.com/api/enquiry', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -17,14 +17,14 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'pankajyadavniraaj@gmail.com',
-    pass: 'pvgp bfiv yptk cmck'
-  }
+  pass: 'ylex eytj ckea zray'
+    }
 });
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
   try {
-    const { name, email, phone, message } = req.body;
+    const { name, email, phone, message, productName, productImage, productCategory } = req.body;
 
     // Validate required fields
     if (!name || !email || !message) {
@@ -34,57 +34,127 @@ app.post('/api/contact', async (req, res) => {
       });
     }
 
-    // Email to owner
-    const ownerMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.OWNER_EMAIL || 'pankajyadavniraaj@gmail.com',
-      subject: `New Contact Form Submission from ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
-            New Contact Form Submission
-          </h2>
-          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-            <p><strong>Message:</strong></p>
-            <div style="background-color: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc2626;">
-              ${message}
+    // Determine if this is a product enquiry or general contact
+    const isProductEnquiry = productName && productImage && productCategory;
+    
+    let ownerMailOptions;
+    
+    if (isProductEnquiry) {
+      // Product enquiry email format
+      ownerMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.OWNER_EMAIL || 'pankajyadavniraaj@gmail.com',
+        subject: `New Product Enquiry: ${productName} from ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
+              New Product Enquiry
+            </h2>
+            
+            <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <div style="display: flex; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap;">
+                <div style="margin-right: 20px; margin-bottom: 15px; min-width: 120px;">
+                  <img src="${productImage}" alt="${productName}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); border: 3px solid #dc2626;">
+                </div>
+                <div>
+                  <h3 style="margin: 0; color: #dc2626;">${productName}</h3>
+                  <p style="margin: 5px 0; color: #64748b; font-size: 14px;">${productCategory}</p>
+                  <div style="margin-top: 10px; padding: 8px 12px; background-color: #dbeafe; border-radius: 6px; display: inline-block;">
+                    <span style="color: #1e40af; font-size: 12px; font-weight: 600;">📸 Product Enquiry</span>
+                  </div>
+                </div>
+              </div>
+              
+              <h4 style="color: #374151; margin-bottom: 15px;">Customer Details:</h4>
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+              
+              <h4 style="color: #374151; margin: 20px 0 10px 0;">Customer Message:</h4>
+              <div style="background-color: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc2626;">
+                ${message}
+              </div>
             </div>
+            
+            <p style="color: #64748b; font-size: 14px;">
+              This enquiry was sent from the Nirraj Packaging website product page.
+            </p>
           </div>
-          <p style="color: #64748b; font-size: 14px;">
-            This message was sent from the Nirraj Packaging website contact form.
-          </p>
-        </div>
-      `
-    };
+        `
+      };
+    } else {
+      // General contact form email format
+      ownerMailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.OWNER_EMAIL || 'pankajyadavniraaj@gmail.com',
+        subject: `New Contact Form Submission from ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
+              New Contact Form Submission
+            </h2>
+            <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p><strong>Name:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+              <p><strong>Message:</strong></p>
+              <div style="background-color: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc2626;">
+                ${message}
+              </div>
+            </div>
+            <p style="color: #64748b; font-size: 14px;">
+              This message was sent from the Nirraj Packaging website contact form.
+            </p>
+          </div>
+        `
+      };
+    }
 
     // Confirmation email to customer
     const customerMailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Thank you for contacting Nirraj Packaging',
+      subject: isProductEnquiry ? `Thank you for your enquiry about ${productName}` : 'Thank you for contacting Nirraj Packaging',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #dc2626; border-bottom: 2px solid #dc2626; padding-bottom: 10px;">
-            Thank You for Your Inquiry
+            ${isProductEnquiry ? 'Thank You for Your Product Enquiry' : 'Thank You for Your Inquiry'}
           </h2>
           <p>Dear ${name},</p>
-          <p>Thank you for contacting Nirraj Packaging. We have received your message and will get back to you within 24 hours.</p>
+          <p>Thank you for ${isProductEnquiry ? `your interest in our ${productName}` : 'contacting Nirraj Packaging'}. We have received your ${isProductEnquiry ? 'enquiry' : 'message'} and will get back to you within 24 hours.</p>
           
+          ${isProductEnquiry ? `
           <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #dc2626; margin-top: 0;">Your Message:</h3>
+            <div style="display: flex; align-items: flex-start; margin-bottom: 15px; flex-wrap: wrap;">
+              <div style="margin-right: 15px; margin-bottom: 10px; min-width: 80px;">
+                <img src="${productImage}" alt="${productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
+              </div>
+              <div>
+                <h3 style="margin: 0; color: #dc2626;">${productName}</h3>
+                <p style="margin: 5px 0; color: #64748b; font-size: 14px;">${productCategory}</p>
+              </div>
+            </div>
+            
+            <h4 style="color: #374151; margin-bottom: 10px;">Your Enquiry Details:</h4>
+            <p><strong>Your Message:</strong></p>
             <div style="background-color: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc2626;">
               ${message}
             </div>
           </div>
+          ` : `
+          <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="color: #374151; margin-bottom: 10px;">Your Message:</h4>
+            <div style="background-color: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc2626;">
+              ${message}
+            </div>
+          </div>
+          `}
 
           <div style="background-color: #dc2626; color: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3 style="margin-top: 0; color: white;">Contact Information</h3>
             <p style="margin: 5px 0; color: white;">📧 Email: pankajyadavniraaj@gmail.com</p>
-            <p style="margin: 5px 0; color: white;">📞 Phone: +1 (555) 123-4567</p>
-            <p style="margin: 5px 0; color: white;">📍 Address: 123 Industrial Ave, Manufacturing District</p>
+            <p style="margin: 5px 0; color: white;">📞 Phone: +91 954-0200-028</p>
+            <p style="margin: 5px 0; color: white;">📍 Address: Industrial Area Khuskhera Bhiwadi, Alwar, Rajasthan</p>
           </div>
 
           <p>Best regards,<br>
@@ -99,7 +169,7 @@ app.post('/api/contact', async (req, res) => {
 
     res.json({ 
       success: true, 
-      message: 'Message sent successfully! We will get back to you soon.' 
+      message: isProductEnquiry ? 'Enquiry sent successfully! Our team will contact you within 24 hours.' : 'Message sent successfully! We will get back to you soon.' 
     });
 
   } catch (error) {

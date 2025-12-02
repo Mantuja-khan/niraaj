@@ -34,15 +34,16 @@ const EnquiryModal = ({
       };
 
       // Use environment variable for backend URL
-      const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/api/enquiry`;
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(enquiryData),
-      });
+      const apiUrl = `https://api.niraajpack.com/api/enquiry`;
+
+const response = await fetch(apiUrl, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(enquiryData),
+});
+
 
       const result = await response.json();
 
